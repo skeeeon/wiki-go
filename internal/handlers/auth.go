@@ -160,11 +160,20 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	auth.ClearSession(w, r, cfg)
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+
+	response := map[string]interface{}{
 		"success": true,
 		"message": "Logout successful",
-	})
+	}
+
+	// If trusted proxy auth is configured with a logout URL, include it in the
+	// response so the frontend can redirect to clear the proxy session too.
+	if cfg.Server.TrustedProxyAuth.Enabled && cfg.Server.TrustedProxyAuth.LogoutURL != "" {
+		response["redirectUrl"] = cfg.Server.TrustedProxyAuth.LogoutURL
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
 
 // LoginPageHandler renders the login page
@@ -174,6 +183,14 @@ func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 	if session != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
+	}
+	
+	// redirect to home — the TrustedProxyAuthMiddleware will create the session.
+	if cfg.Server.TrustedProxyAuth.Enabled {
+		if username := r.Header.Get(cfg.Server.TrustedProxyAuth.UserHeader); username != "" {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
 	}
 
 	// Prepare the data for the template

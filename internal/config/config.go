@@ -22,7 +22,7 @@ var (
 type User struct {
 	Username string   `yaml:"username" json:"username"`
 	Password string   `yaml:"password" json:"password,omitempty"`
-	Role     string   `yaml:"role" json:"role"`                       // "admin", "editor", or "viewer"
+	Role     string   `yaml:"role" json:"role"`                         // "admin", "editor", or "viewer"
 	Groups   []string `yaml:"groups,omitempty" json:"groups,omitempty"` // Optional groups for access control
 }
 
@@ -32,6 +32,20 @@ type AccessRule struct {
 	Access      string   `yaml:"access" json:"access"` // "public", "private", "restricted"
 	Groups      []string `yaml:"groups,omitempty" json:"groups,omitempty"`
 	Description string   `yaml:"description,omitempty" json:"description,omitempty"`
+}
+
+// TrustedProxyAuthConfig defines settings for proxy-based authentication
+// (e.g. oauth2-proxy, Authelia, Authentik).
+type TrustedProxyAuthConfig struct {
+	Enabled         bool     `yaml:"enabled"`
+	UserHeader      string   `yaml:"user_header"`
+	EmailHeader     string   `yaml:"email_header"`
+	GroupsHeader    string   `yaml:"groups_header"`
+	GroupsDelimiter string   `yaml:"groups_delimiter"`
+	DefaultRole     string   `yaml:"default_role"`
+	AutoCreateUsers bool     `yaml:"auto_create_users"`
+	LogoutURL       string   `yaml:"logout_url"`
+	TrustedCIDRs    []string `yaml:"trusted_cidrs,omitempty"`
 }
 
 // Role constants - using the ones defined in roles package
@@ -53,9 +67,10 @@ type Config struct {
 		AllowInsecureCookies bool `yaml:"allow_insecure_cookies"`
 		// Enable native TLS. When true, application will run over HTTPS using the
 		// supplied certificate and key paths.
-		SSL      bool   `yaml:"ssl"`
-		SSLCert  string `yaml:"ssl_cert"`
-		SSLKey   string `yaml:"ssl_key"`
+		SSL              bool                   `yaml:"ssl"`
+		SSLCert          string                 `yaml:"ssl_cert"`
+		SSLKey           string                 `yaml:"ssl_key"`
+		TrustedProxyAuth TrustedProxyAuthConfig `yaml:"trusted_proxy_auth"`
 	} `yaml:"server"`
 	Wiki struct {
 		RootDir                   string `yaml:"root_dir"`
@@ -78,7 +93,7 @@ type Config struct {
 	AccessRules []AccessRule `yaml:"access_rules,omitempty"`
 	Security    struct {
 		PasswordStrength int `yaml:"passwordstrength"`
-		LoginBan struct {
+		LoginBan         struct {
 			Enabled           bool `yaml:"enabled"`
 			MaxFailures       int  `yaml:"max_failures"`
 			WindowSeconds     int  `yaml:"window_seconds"`
@@ -98,6 +113,17 @@ func LoadConfig(path string) (*Config, error) {
 	config.Server.SSL = false
 	config.Server.SSLCert = ""
 	config.Server.SSLKey = ""
+
+	// Trusted proxy auth defaults
+	config.Server.TrustedProxyAuth.Enabled = false
+	config.Server.TrustedProxyAuth.UserHeader = "X-Forwarded-User"
+	config.Server.TrustedProxyAuth.EmailHeader = "X-Forwarded-Email"
+	config.Server.TrustedProxyAuth.GroupsHeader = "X-Forwarded-Groups"
+	config.Server.TrustedProxyAuth.GroupsDelimiter = ","
+	config.Server.TrustedProxyAuth.DefaultRole = "viewer"
+	config.Server.TrustedProxyAuth.AutoCreateUsers = true
+	config.Server.TrustedProxyAuth.LogoutURL = ""
+
 	config.Wiki.RootDir = "data"
 	config.Wiki.DocumentsDir = "documents"
 	config.Wiki.Title = "📚 Wiki-Go"
@@ -173,6 +199,15 @@ func LoadConfig(path string) (*Config, error) {
 				config.Server.SSL,
 				config.Server.SSLCert,
 				config.Server.SSLKey,
+				config.Server.TrustedProxyAuth.Enabled,
+				config.Server.TrustedProxyAuth.UserHeader,
+				config.Server.TrustedProxyAuth.EmailHeader,
+				config.Server.TrustedProxyAuth.GroupsHeader,
+				config.Server.TrustedProxyAuth.GroupsDelimiter,
+				config.Server.TrustedProxyAuth.DefaultRole,
+				config.Server.TrustedProxyAuth.AutoCreateUsers,
+				config.Server.TrustedProxyAuth.LogoutURL,
+				formatTrustedCIDRs(config.Server.TrustedProxyAuth.TrustedCIDRs),
 				config.Wiki.RootDir,
 				config.Wiki.DocumentsDir,
 				config.Wiki.Title,
@@ -215,15 +250,9 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	// Ensure the on-disk configuration includes every setting present in the current template.
-	// This will rewrite the file ONLY when new settings have been introduced that are not
-	// present in the user's existing config.yaml. The user's current values will be
-	// preserved because we first unmarshalled them into the config struct above before
-	// regenerating the file via the template.
 	if err := ensureCompleteConfig(path, config, data); err != nil {
 		return nil, err
 	}
-
-	// Migrate user roles from is_admin to role - this is now done in main.go
 
 	return config, nil
 }
@@ -243,6 +272,31 @@ func GetConfigTemplate() string {
     ssl: %t
     ssl_cert: "%s"
     ssl_key: "%s"
+    # Trusted proxy authentication (e.g. oauth2-proxy, Authelia, Authentik).
+    # When enabled, Wiki-Go reads identity from HTTP headers set by the upstream
+    # reverse proxy and creates sessions automatically.
+    # WARNING: Only enable this when Wiki-Go is behind a trusted proxy and is NOT
+    # directly accessible by clients. Anyone who can reach Wiki-Go directly can
+    # forge the auth headers and impersonate any user.
+    trusted_proxy_auth:
+        enabled: %t
+        # Header containing the authenticated username
+        user_header: "%s"
+        # Header containing the authenticated user's email (optional)
+        email_header: "%s"
+        # Header containing the user's groups (optional)
+        groups_header: "%s"
+        # Delimiter for multiple groups in the groups header
+        groups_delimiter: "%s"
+        # Default role for proxy-authenticated users not defined in the users list
+        default_role: "%s"
+        # Automatically create user entries in config for proxy-authenticated users
+        auto_create_users: %t
+        # URL to redirect to on logout (e.g. /oauth2/sign_out for oauth2-proxy)
+        logout_url: "%s"
+        # Restrict proxy auth to requests from these CIDRs (defense-in-depth).
+        # Leave empty to allow any source (only safe if Wiki-Go is network-isolated).
+%s
 wiki:
     root_dir: "%s"
     documents_dir: "%s"
@@ -279,6 +333,19 @@ users:
 %s
 access_rules:
 %s`
+}
+
+// formatTrustedCIDRs formats the trusted CIDRs list for the config template.
+func formatTrustedCIDRs(cidrs []string) string {
+	if len(cidrs) == 0 {
+		return "        trusted_cidrs: []"
+	}
+	var sb strings.Builder
+	sb.WriteString("        trusted_cidrs:")
+	for _, cidr := range cidrs {
+		sb.WriteString(fmt.Sprintf("\n            - \"%s\"", cidr))
+	}
+	return sb.String()
 }
 
 // FormatUserEntry formats a single user entry for the config file
@@ -336,6 +403,15 @@ func SaveConfig(cfg *Config, w io.Writer) error {
 		cfg.Server.SSL,
 		cfg.Server.SSLCert,
 		cfg.Server.SSLKey,
+		cfg.Server.TrustedProxyAuth.Enabled,
+		cfg.Server.TrustedProxyAuth.UserHeader,
+		cfg.Server.TrustedProxyAuth.EmailHeader,
+		cfg.Server.TrustedProxyAuth.GroupsHeader,
+		cfg.Server.TrustedProxyAuth.GroupsDelimiter,
+		cfg.Server.TrustedProxyAuth.DefaultRole,
+		cfg.Server.TrustedProxyAuth.AutoCreateUsers,
+		cfg.Server.TrustedProxyAuth.LogoutURL,
+		formatTrustedCIDRs(cfg.Server.TrustedProxyAuth.TrustedCIDRs),
 		cfg.Wiki.RootDir,
 		cfg.Wiki.DocumentsDir,
 		cfg.Wiki.Title,
@@ -367,9 +443,6 @@ func SaveConfig(cfg *Config, w io.Writer) error {
 
 // ensureCompleteConfig regenerates the configuration file using the current template and
 // writes it back to disk ONLY if the newly rendered file differs from what already exists.
-// This means that when new settings are added to the application template, running the app
-// once will automatically add them to an existing config.yaml while preserving the user's
-// current values for existing settings.
 func ensureCompleteConfig(path string, cfg *Config, original []byte) error {
 	var buf bytes.Buffer
 	if err := SaveConfig(cfg, &buf); err != nil {
@@ -378,14 +451,10 @@ func ensureCompleteConfig(path string, cfg *Config, original []byte) error {
 
 	newData := buf.Bytes()
 
-	// If the generated configuration exactly matches what is already on disk, no update is
-	// necessary. This quick equality check avoids unnecessary writes.
 	if bytes.Equal(original, newData) {
 		return nil
 	}
 
-	// Otherwise, overwrite the file with the fully rendered configuration that now contains
-	// any newly introduced settings.
 	if err := os.WriteFile(path, newData, 0644); err != nil {
 		return fmt.Errorf("failed to update config file with new settings: %w", err)
 	}

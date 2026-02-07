@@ -485,6 +485,9 @@ func SetupRoutes(cfg *config.Config) {
 	// Apply middleware to all routes
 	handler := CSPMiddleware(mux)
 
+	// Wrap with trusted proxy auth middleware (no-op if not enabled)
+	handler = auth.TrustedProxyAuthMiddleware(cfg, handler)
+
 	// Set the handler for the default ServeMux
 	http.Handle("/", handler)
 }

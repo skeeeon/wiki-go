@@ -236,12 +236,19 @@ func ClearSession(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	})
 }
 
-// ValidateCredentials validates user credentials against the config
+
+// ValidateCredentials validates user credentials against the config.
+// Users with empty password hashes (proxy-only users) are skipped.
 func ValidateCredentials(username, password string, cfg *config.Config) (bool, string, []string) {
 	for _, user := range cfg.Users {
-		if user.Username == username && crypto.CheckPasswordHash(password, user.Password) {
-			// Use the user's role and groups
-			return true, user.Role, user.Groups
+		if user.Username == username {
+			// Skip proxy-only users that have no local password set
+			if user.Password == "" {
+				continue
+			}
+			if crypto.CheckPasswordHash(password, user.Password) {
+				return true, user.Role, user.Groups
+			}
 		}
 	}
 	return false, "", nil
