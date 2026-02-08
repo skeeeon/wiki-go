@@ -11,6 +11,81 @@ LeoMoon Wiki-Go is a modern, feature-rich, databaseless **flat-file wiki** platf
 
 No database. No bloat. Zero maintenance. Just Markdown.
 
+### Trusted Proxy Authentication (SSO)
+
+Wiki-Go supports Single Sign-On (SSO) through trusted proxy authentication. When placed behind an authenticating reverse proxy such as [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/), [Authelia](https://www.authelia.com/), or [Authentik](https://goauthentik.io/), Wiki-Go can read identity from HTTP headers and create sessions automatically — no local passwords required.
+
+#### How It Works
+
+1. The reverse proxy handles OIDC/OAuth2/SAML authentication with your identity provider
+2. Authenticated requests are forwarded to Wiki-Go with identity headers (e.g. `X-Forwarded-User`, `X-Forwarded-Groups`)
+3. Wiki-Go reads these headers, creates a session, and maps the user to a role
+4. All existing features — roles, groups, path-based access rules — work as normal
+
+#### Configuration
+
+Add the following to your `data/config.yaml` under the `server` section:
+
+```yaml
+server:
+    trusted_proxy_auth:
+        enabled: true
+        user_header: "X-Forwarded-User"
+        email_header: "X-Forwarded-Email"
+        groups_header: "X-Forwarded-Groups"
+        groups_delimiter: ","
+        default_role: "editor"
+        auto_create_users: true
+        logout_url: "/oauth2/sign_out"
+        trusted_cidrs:
+            - "172.16.0.0/12"
+            - "10.0.0.0/8"
+```
+
+| Setting | Description | Default |
+|---|---|---|
+| `enabled` | Enable trusted proxy authentication | `false` |
+| `user_header` | Header containing the authenticated username | `X-Forwarded-User` |
+| `email_header` | Header containing the user's email (optional) | `X-Forwarded-Email` |
+| `groups_header` | Header containing comma-separated group names | `X-Forwarded-Groups` |
+| `groups_delimiter` | Delimiter for multiple groups in the header | `,` |
+| `default_role` | Role assigned to users not defined in the `users` list | `viewer` |
+| `auto_create_users` | Automatically add proxy-authenticated users to config | `true` |
+| `logout_url` | URL to redirect to on logout (clears proxy session) | `""` |
+| `trusted_cidrs` | Only accept auth headers from these CIDR ranges | `[]` (any source) |
+
+#### Pre-Assigning Roles
+
+Users authenticated through the proxy receive the `default_role` unless they are pre-defined in the `users` section of `config.yaml`. To grant specific users elevated permissions, add them with an empty password:
+
+```yaml
+users:
+    - username: alice@example.com
+      password: ""
+      role: admin
+      groups:
+        - engineering
+    - username: bob@example.com
+      password: ""
+      role: editor
+```
+
+Users with an empty password can only authenticate through the proxy — they cannot log in locally. Groups from the proxy header are merged with any groups defined in config.
+
+> **⚠️ Security Warning:** Only enable `trusted_proxy_auth` when Wiki-Go is behind a trusted proxy and is **not** directly accessible by clients. Anyone who can reach Wiki-Go directly can forge the auth headers and impersonate any user. Always configure `trusted_cidrs` as an additional layer of defense, and ensure Wiki-Go's port is not exposed to untrusted networks.
+
+#### Compatibility
+
+Trusted proxy authentication works with any reverse proxy that sets user identity headers, including:
+
+- **oauth2-proxy** — `X-Forwarded-User`, `X-Forwarded-Email`, `X-Forwarded-Groups`
+- **Authelia** — `Remote-User`, `Remote-Groups`, `Remote-Email`
+- **Authentik** — `X-authentik-username`, `X-authentik-groups`, `X-authentik-email`
+- **Traefik ForwardAuth** — configurable header names
+
+Adjust `user_header`, `email_header`, and `groups_header` in your config to match your proxy's header names.
+
+
 ## Important Configuration Note with Non-SSL Setups
 
 If you're running Wiki-Go without SSL/HTTPS and experiencing login issues, you need to set `allow_insecure_cookies: true` in your `config.yaml` file and restart Wiki-Go. This is because:
