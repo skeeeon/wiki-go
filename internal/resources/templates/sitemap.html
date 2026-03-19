@@ -21,16 +21,16 @@
             <h1>Sitemap</h1>
             <div class="sitemap-format-links">
                 <a href="/sitemap.xml" title="XML format for search engines">XML Sitemap</a>
-                <a href="/" title="Return to homepage">Back to Home</a>
+                <a href="/" title="{{.BackToHome}}">{{.BackToHome}}</a>
             </div>
         </div>
 
         <!-- Display Home category first -->
-        {{if index .Categories "Home"}}
+        {{if index .Categories .HomeCategory}}
             <div class="category-section">
-                <h2 class="category-title">Home</h2>
+                <h2 class="category-title">{{.HomeCategory}}</h2>
                 <ul class="page-list">
-                    {{range $page := index .Categories "Home"}}
+                    {{range $page := index .Categories .HomeCategory}}
                         <li>
                             <a href="{{$page.URL}}">{{$page.Title}}</a>
                             <span class="last-modified">Last modified: {{$page.LastMod.Format "2006-01-02"}}</span>
@@ -43,7 +43,7 @@
         <!-- Display other categories in a grid layout -->
         <div class="category-sections-container">
             {{range $category, $pages := .Categories}}
-                {{if ne $category "Home"}}
+                {{if ne $category $.HomeCategory}}
                     <div class="category-section">
                         <h2 class="category-title">{{$category}}</h2>
                         <ul class="page-list">

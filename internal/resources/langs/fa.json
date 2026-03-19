@@ -31,6 +31,7 @@
   "common.unknown_error": "خطای ناشناخته",
 
   "nav.home": "خانه",
+  "nav.back_to_home": "بازگشت به خانه",
 
   "editor.title": "ویرایش سند",
   "editor.save_success": "سند با موفقیت ذخیره شد",
@@ -149,6 +150,7 @@
   "login.error": "نام کاربری یا رمز عبور نامعتبر است",
   "login.ban": "تلاش‌های ناموفق زیاد برای ورود؛ لطفاً بعداً دوباره امتحان کنید",
   "login.retry_in": "تلاش مجدد در",
+  "login.logging_in": "در حال ورود...",
 
   "new_doc.title": "ایجاد سند جدید",
   "new_doc.document_title": "عنوان سند",

@@ -31,6 +31,7 @@
   "common.unknown_error": "Ukjent feil",
 
   "nav.home": "Hjem",
+  "nav.back_to_home": "Tilbake til forsiden",
 
   "editor.title": "Rediger dokument",
   "editor.save_success": "Dokumentet ble lagret",
@@ -44,7 +45,7 @@
 
   "settings.title": "Wiki-innstillinger",
   "settings.general": "Generelt",
-  "settings.access_control": "Tilgangskontroll",
+  "settings.access": "Tilgangskontroll",
   "settings.users": "Brukere",
   "settings.wiki": "Wiki",
   "settings.content": "Innhold",
@@ -149,6 +150,7 @@
   "login.error": "Ugyldig brukernavn eller passord",
   "login.ban": "For mange mislykkede påloggingsforsøk; prøv igjen senere",
   "login.retry_in": "prøv igjen om",
+  "login.logging_in": "Logger inn...",
 
   "new_doc.title": "Opprett nytt dokument",
   "new_doc.document_title": "Dokumenttittel",

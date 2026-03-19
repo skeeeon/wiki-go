@@ -31,6 +31,7 @@
   "common.unknown_error": "अज्ञात त्रुटि",
 
   "nav.home": "होम",
+  "nav.back_to_home": "होम पर वापस जाएं",
 
   "editor.title": "दस्तावेज़ संपादित करें",
   "editor.save_success": "दस्तावेज़ सफलतापूर्वक सहेजा गया",
@@ -44,7 +45,7 @@
 
   "settings.title": "विकी सेटिंग्स",
   "settings.general": "सामान्य",
-  "settings.access_control": "पहुँच नियंत्रण",
+  "settings.access": "पहुँच नियंत्रण",
   "settings.users": "उपयोगकर्ता",
   "settings.wiki": "विकी",
   "settings.content": "सामग्री",
@@ -149,6 +150,7 @@
   "login.error": "अमान्य उपयोगकर्ता नाम या पासवर्ड",
   "login.ban": "बहुत अधिक असफल लॉगिन प्रयास; बाद में पुनः प्रयास करें",
   "login.retry_in": "पुनः प्रयास करें",
+  "login.logging_in": "लॉग इन हो रहा है...",
 
   "new_doc.title": "नया दस्तावेज़ बनाएं",
   "new_doc.document_title": "दस्तावेज़ शीर्षक",

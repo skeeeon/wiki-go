@@ -31,6 +31,7 @@
   "common.unknown_error": "Errore sconosciuto",
 
   "nav.home": "Home",
+  "nav.back_to_home": "Torna alla home",
 
   "editor.title": "Modifica Documento",
   "editor.save_success": "Documento salvato con successo",
@@ -44,7 +45,7 @@
 
   "settings.title": "Impostazioni Wiki",
   "settings.general": "Generale",
-  "settings.access_control": "Controllo accessi",
+  "settings.access": "Controllo accessi",
   "settings.users": "Utenti",
   "settings.wiki": "Wiki",
   "settings.content": "Contenuto",
@@ -149,6 +150,7 @@
   "login.error": "Nome utente o password non validi",
   "login.ban": "Troppi tentativi di accesso falliti; riprova più tardi",
   "login.retry_in": "riprova tra",
+  "login.logging_in": "Accesso in corso...",
 
   "new_doc.title": "Crea Nuovo Documento",
   "new_doc.document_title": "Titolo Documento",

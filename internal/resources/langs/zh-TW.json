@@ -31,6 +31,7 @@
   "common.unknown_error": "未知錯誤",
 
   "nav.home": "首頁",
+  "nav.back_to_home": "返回首頁",
 
   "editor.title": "編輯文件",
   "editor.save_success": "文件儲存成功",
@@ -44,7 +45,7 @@
 
   "settings.title": "Wiki 設定",
   "settings.general": "一般",
-  "settings.access_control": "存取控制",
+  "settings.access": "存取控制",
   "settings.users": "使用者",
   "settings.wiki": "Wiki",
   "settings.content": "內容",
@@ -149,6 +150,7 @@
   "login.error": "使用者名稱或密碼無效",
   "login.ban": "登入失敗次數過多；請稍後再試",
   "login.retry_in": "請在此時間後重試",
+  "login.logging_in": "登入中...",
 
   "new_doc.title": "建立新文件",
   "new_doc.document_title": "文件標題",

@@ -31,6 +31,7 @@
   "common.unknown_error": "Neznámá chyba",
 
   "nav.home": "Domů",
+  "nav.back_to_home": "Zpět na úvodní stránku",
 
   "editor.title": "Upravit dokument",
   "editor.save_success": "Dokument byl úspěšně uložen",
@@ -149,6 +150,7 @@
   "login.error": "Neplatné uživatelské jméno nebo heslo",
   "login.ban": "Příliš mnoho neúspěšných přihlášení; zkuste to později",
   "login.retry_in": "zkuste znovu za",
+  "login.logging_in": "Přihlašování...",
 
   "new_doc.title": "Vytvořit nový dokument",
   "new_doc.document_title": "Název dokumentu",

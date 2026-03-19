@@ -31,6 +31,7 @@
   "common.unknown_error": "Tuntematon virhe",
 
   "nav.home": "Koti",
+  "nav.back_to_home": "Takaisin etusivulle",
 
   "editor.title": "Muokkaa dokumenttia",
   "editor.save_success": "Dokumentti tallennettu onnistuneesti",
@@ -149,6 +150,7 @@
   "login.error": "Virheellinen käyttäjätunnus tai salasana",
   "login.ban": "Liian monta epäonnistunutta kirjautumisyritystä; yritä myöhemmin uudelleen",
   "login.retry_in": "yritä uudelleen",
+  "login.logging_in": "Kirjaudutaan...",
 
   "new_doc.title": "Luo uusi dokumentti",
   "new_doc.document_title": "Dokumentin otsikko",

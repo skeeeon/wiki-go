@@ -31,6 +31,7 @@
   "common.unknown_error": "Unknown error",
 
   "nav.home": "Home",
+  "nav.back_to_home": "Back to Home",
 
   "editor.title": "Edit Document",
   "editor.save_success": "Document saved successfully",
@@ -149,6 +150,7 @@
   "login.error": "Invalid username or password",
   "login.ban": "Too many failed logins; try again later",
   "login.retry_in": "retry in",
+  "login.logging_in": "Logging in...",
 
   "new_doc.title": "Create New Document",
   "new_doc.document_title": "Document Title",

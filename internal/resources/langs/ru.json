@@ -31,6 +31,7 @@
   "common.unknown_error": "Неизвестная ошибка",
 
   "nav.home": "Главная",
+  "nav.back_to_home": "Вернуться на главную",
 
   "editor.title": "Редактировать документ",
   "editor.save_success": "Документ успешно сохранен",
@@ -44,7 +45,7 @@
 
   "settings.title": "Настройки вики",
   "settings.general": "Общие",
-  "settings.access_control": "Контроль доступа",
+  "settings.access": "Контроль доступа",
   "settings.users": "Пользователи",
   "settings.wiki": "Вики",
   "settings.content": "Содержание",
@@ -149,6 +150,7 @@
   "login.error": "Неверное имя пользователя или пароль",
   "login.ban": "Слишком много неудачных попыток входа; попробуйте позже",
   "login.retry_in": "повторите через",
+  "login.logging_in": "Вход...",
 
   "new_doc.title": "Создать новый документ",
   "new_doc.document_title": "Заголовок документа",

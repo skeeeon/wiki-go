@@ -31,6 +31,7 @@
   "common.unknown_error": "不明なエラー",
 
   "nav.home": "ホーム",
+  "nav.back_to_home": "ホームに戻る",
 
   "editor.title": "文書を編集",
   "editor.save_success": "文書が正常に保存されました",
@@ -44,7 +45,7 @@
 
   "settings.title": "ウィキ設定",
   "settings.general": "一般",
-  "settings.access_control": "アクセス制御",
+  "settings.access": "アクセス制御",
   "settings.users": "ユーザー",
   "settings.wiki": "ウィキ",
   "settings.content": "コンテンツ",
@@ -149,6 +150,7 @@
   "login.error": "ユーザー名またはパスワードが無効です",
   "login.ban": "ログイン失敗が多すぎます。後でもう一度お試しください",
   "login.retry_in": "再試行まで",
+  "login.logging_in": "ログイン中...",
 
   "new_doc.title": "新規文書を作成",
   "new_doc.document_title": "文書タイトル",

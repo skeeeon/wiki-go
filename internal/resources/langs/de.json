@@ -31,6 +31,7 @@
   "common.unknown_error": "Unbekannter Fehler",
 
   "nav.home": "Startseite",
+  "nav.back_to_home": "Zurück zur Startseite",
 
   "editor.title": "Dokument bearbeiten",
   "editor.save_success": "Dokument erfolgreich gespeichert",
@@ -149,6 +150,7 @@
   "login.error": "Ungültiger Benutzername oder Passwort",
   "login.ban": "Zu viele fehlgeschlagene Anmeldeversuche; versuchen Sie es später erneut",
   "login.retry_in": "erneut versuchen in",
+  "login.logging_in": "Anmeldung...",
 
   "new_doc.title": "Neues Dokument erstellen",
   "new_doc.document_title": "Dokumenttitel",

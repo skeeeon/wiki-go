@@ -100,6 +100,11 @@
         const password = document.getElementById('password').value;
         const keepLoggedIn = document.getElementById('keepLoggedIn')?.checked || false;
 
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = window.i18n ? window.i18n.t('login.logging_in') : 'Logging in...';
+
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
@@ -144,11 +149,15 @@
 
                 errorMessage.textContent = msg;
                 errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
         } catch (error) {
             console.error('Login error:', error);
             errorMessage.textContent = 'An error occurred. Please try again.';
             errorMessage.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     }
 

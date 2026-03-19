@@ -130,7 +130,12 @@ func LinkPreprocessor(markdown string, docPath string) string {
 				// Check attachment exists BEFORE resolving to API path
 				notFound := false
 				if isLocalPath(path) {
-					fsPath := getAttachmentPath(path, docPath)
+					// Strip anchor fragment for filesystem check only
+					checkPath := path
+					if idx := strings.Index(checkPath, "#"); idx != -1 {
+						checkPath = checkPath[:idx]
+					}
+					fsPath := getAttachmentPath(checkPath, docPath)
 					if _, err := os.Stat(fsPath); os.IsNotExist(err) {
 						notFound = true
 					}
@@ -157,7 +162,12 @@ func LinkPreprocessor(markdown string, docPath string) string {
 				// Check attachment exists BEFORE resolving to API path
 				notFound := false
 				if isLocalPath(path) {
-					fsPath := getAttachmentPath(path, docPath)
+					// Strip anchor fragment for filesystem check only
+					checkPath := path
+					if idx := strings.Index(checkPath, "#"); idx != -1 {
+						checkPath = checkPath[:idx]
+					}
+					fsPath := getAttachmentPath(checkPath, docPath)
 					if _, err := os.Stat(fsPath); os.IsNotExist(err) {
 						notFound = true
 					}
@@ -166,7 +176,12 @@ func LinkPreprocessor(markdown string, docPath string) string {
 
 				// Check absolute doc paths (e.g., /hehe -> data/documents/hehe)
 				if strings.HasPrefix(path, "/") && !strings.HasPrefix(path, "/api/") {
-					if _, err := os.Stat("data/documents" + path); os.IsNotExist(err) {
+					// Strip anchor fragment for filesystem check only
+					checkPath := path
+					if idx := strings.Index(checkPath, "#"); idx != -1 {
+						checkPath = checkPath[:idx]
+					}
+					if _, err := os.Stat("data/documents" + checkPath); os.IsNotExist(err) {
 						notFound = true
 					}
 				}

@@ -31,6 +31,7 @@
   "common.unknown_error": "خطأ غير معروف",
 
   "nav.home": "الرئيسية",
+  "nav.back_to_home": "العودة إلى الرئيسية",
 
   "editor.title": "تعديل المستند",
   "editor.save_success": "تم حفظ المستند بنجاح",
@@ -149,6 +150,7 @@
   "login.error": "اسم مستخدم أو كلمة مرور غير صالحة",
   "login.ban": "محاولات تسجيل دخول فاشلة كثيرة؛ حاول مرة أخرى لاحقاً",
   "login.retry_in": "أعد المحاولة بعد",
+  "login.logging_in": "جارٍ تسجيل الدخول...",
 
   "new_doc.title": "إنشاء مستند جديد",
   "new_doc.document_title": "عنوان المستند",

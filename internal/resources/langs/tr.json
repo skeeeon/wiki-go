@@ -31,6 +31,7 @@
   "common.unknown_error": "Bilinmeyen hata",
 
   "nav.home": "Ana Sayfa",
+  "nav.back_to_home": "Ana Sayfaya Dön",
 
   "editor.title": "Belgeyi Düzenle",
   "editor.save_success": "Belge başarıyla kaydedildi",
@@ -44,7 +45,7 @@
 
   "settings.title": "Wiki Ayarları",
   "settings.general": "Genel",
-  "settings.access_control": "Erişim Kontrolü",
+  "settings.access": "Erişim Kontrolü",
   "settings.users": "Kullanıcılar",
   "settings.wiki": "Wiki",
   "settings.content": "İçerik",
@@ -149,6 +150,7 @@
   "login.error": "Geçersiz kullanıcı adı veya şifre",
   "login.ban": "Çok fazla başarısız giriş denemesi; daha sonra tekrar deneyin",
   "login.retry_in": "tekrar deneyin",
+  "login.logging_in": "Giriş yapılıyor...",
 
   "new_doc.title": "Yeni Belge Oluştur",
   "new_doc.document_title": "Belge Başlığı",

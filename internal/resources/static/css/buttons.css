@@ -67,6 +67,12 @@
     border-color: var(--primary-hover);
 }
 
+.login-button:disabled,
+.login-submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Delete button styling */
 .toolbar-button.delete-document,
 .dialog-button.delete-confirm {

@@ -2,6 +2,10 @@ name: Docker Builds - Stable
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g. v1.2.3)'
+        required: true
   push:
     tags:
       - "v*.*.*"
@@ -17,7 +21,6 @@ jobs:
   docker:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.docker == 'true' }}
 
     steps:
       - name: Checkout code
@@ -49,7 +52,11 @@ jobs:
       - name: Get tag version
         id: get_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
           echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
           if [[ $VERSION == v* ]]; then
             VERSION=${VERSION:1}

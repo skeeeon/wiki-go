@@ -31,6 +31,7 @@
   "common.unknown_error": "Error desconocido",
 
   "nav.home": "Inicio",
+  "nav.back_to_home": "Volver al inicio",
 
   "editor.title": "Editar Documento",
   "editor.save_success": "Documento guardado con éxito",
@@ -149,6 +150,7 @@
   "login.error": "Nombre de usuario o contraseña inválidos",
   "login.ban": "Demasiados intentos fallidos; intente más tarde",
   "login.retry_in": "reintentar en",
+  "login.logging_in": "Iniciando sesión...",
 
   "new_doc.title": "Crear Nuevo Documento",
   "new_doc.document_title": "Título del Documento",

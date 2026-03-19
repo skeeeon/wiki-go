@@ -11,6 +11,7 @@ import (
 	"time"
 	"wiki-go/internal/auth"
 	"wiki-go/internal/config"
+	"wiki-go/internal/i18n"
 	"wiki-go/internal/resources"
 )
 
@@ -31,12 +32,14 @@ type Sitemap struct {
 
 // Page data for HTML sitemap
 type SitemapPage struct {
-	Title      string
-	Config     *config.Config
-	BaseURL    string
-	Pages      []SitemapPageEntry
-	Categories map[string][]SitemapPageEntry
-	UserRole   string
+	Title        string
+	Config       *config.Config
+	BaseURL      string
+	Pages        []SitemapPageEntry
+	Categories   map[string][]SitemapPageEntry
+	UserRole     string
+	HomeCategory string
+	BackToHome   string
 }
 
 type SitemapPageEntry struct {
@@ -111,7 +114,7 @@ func renderHTMLSitemap(w http.ResponseWriter, r *http.Request, pages []SitemapPa
 	categories := make(map[string][]SitemapPageEntry)
 
 	// Add the home page to a special category
-	homeCategory := "Home"
+	homeCategory := i18n.Translate("nav.home")
 	categories[homeCategory] = []SitemapPageEntry{}
 
 	// Find the home page in the entries and add it to the home category
@@ -138,12 +141,14 @@ func renderHTMLSitemap(w http.ResponseWriter, r *http.Request, pages []SitemapPa
 
 	// Create the sitemap page data
 	sitemapData := SitemapPage{
-		Title:      fmt.Sprintf("Sitemap - %s", cfg.Wiki.Title),
-		Config:     cfg,
-		BaseURL:    baseURL,
-		Pages:      pages,
-		Categories: categories,
-		UserRole:   userRole,
+		Title:        fmt.Sprintf("Sitemap - %s", cfg.Wiki.Title),
+		Config:       cfg,
+		BaseURL:      baseURL,
+		Pages:        pages,
+		Categories:   categories,
+		UserRole:     userRole,
+		HomeCategory: homeCategory,
+		BackToHome:   i18n.Translate("nav.back_to_home"),
 	}
 
 	// Set content type
@@ -178,7 +183,7 @@ func gatherPages(baseURL string, cfg *config.Config, session *auth.Session) ([]S
 		// Add homepage to page entries
 		homePage := SitemapPageEntry{
 			URL:      "/",
-			Title:    "Home",
+			Title:    i18n.Translate("nav.home"),
 			Path:     "/",
 			Category: "",
 			LastMod:  time.Now(),

@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"wiki-go/internal/auth"
 	"wiki-go/internal/config"
 )
 
@@ -32,18 +33,19 @@ func SearchHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 		return
 	}
 
-	results := performSearch(req.Query, cfg.Wiki.RootDir, cfg.Wiki.DocumentsDir)
+	session := auth.GetSession(r)
+	results := performSearch(req.Query, session, cfg)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
 }
 
-func performSearch(query string, rootDir string, documentsDir string) []SearchResult {
+func performSearch(query string, session *auth.Session, cfg *config.Config) []SearchResult {
 	var results []SearchResult
 	searchTerms := parseSearchQuery(query)
 
 	// Full path to the documents directory
-	docsPath := filepath.Join(rootDir, documentsDir)
+	docsPath := filepath.Join(cfg.Wiki.RootDir, cfg.Wiki.DocumentsDir)
 
 	err := filepath.Walk(docsPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -52,6 +54,19 @@ func performSearch(query string, rootDir string, documentsDir string) []SearchRe
 
 		// Only process markdown files
 		if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".md") {
+			// Compute the document's URL path first for access checking
+			cleanPath := path
+			cleanPath = strings.ReplaceAll(cleanPath, "\\", "/")
+			prefix := strings.ReplaceAll(docsPath, "\\", "/") + "/"
+			cleanPath = strings.TrimPrefix(cleanPath, prefix)
+			cleanPath = strings.TrimSuffix(strings.Replace(cleanPath, "document.md", "", 1), ".md")
+			urlPath := "/" + cleanPath
+
+			// Skip documents the user cannot access
+			if !auth.CanAccessDocument(urlPath, session, cfg) {
+				return nil
+			}
+
 			content, err := os.ReadFile(path)
 			if err != nil {
 				return nil
@@ -61,21 +76,9 @@ func performSearch(query string, rootDir string, documentsDir string) []SearchRe
 				title := extractTitle(string(content))
 				excerpt := extractExcerpt(string(content), searchTerms)
 
-				// Clean up the path
-				cleanPath := path
-				// First convert to forward slashes
-				cleanPath = strings.ReplaceAll(cleanPath, "\\", "/")
-
-				// Remove the rootDir/documentsDir prefix
-				prefix := strings.ReplaceAll(docsPath, "\\", "/") + "/"
-				cleanPath = strings.TrimPrefix(cleanPath, prefix)
-
-				// Remove document.md and any remaining .md extension
-				cleanPath = strings.TrimSuffix(strings.Replace(cleanPath, "document.md", "", 1), ".md")
-
 				results = append(results, SearchResult{
 					Title:   title,
-					Path:    "/" + cleanPath,
+					Path:    urlPath,
 					Excerpt: excerpt,
 				})
 			}
