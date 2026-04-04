@@ -32,6 +32,9 @@
 
   "nav.home": "Startseite",
   "nav.back_to_home": "Zurück zur Startseite",
+  "sitemap.title": "Seitenübersicht",
+  "sitemap.xml_sitemap": "XML-Seitenübersicht",
+  "sitemap.xml_description": "XML-Format für Suchmaschinen",
 
   "editor.title": "Dokument bearbeiten",
   "editor.save_success": "Dokument erfolgreich gespeichert",

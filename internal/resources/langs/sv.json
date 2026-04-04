@@ -32,6 +32,9 @@
 
   "nav.home": "Hem",
   "nav.back_to_home": "Tillbaka till startsidan",
+  "sitemap.title": "Webbplatskarta",
+  "sitemap.xml_sitemap": "XML-webbplatskarta",
+  "sitemap.xml_description": "XML-format för sökmotorer",
 
   "editor.title": "Redigera dokument",
   "editor.save_success": "Dokumentet har sparats",

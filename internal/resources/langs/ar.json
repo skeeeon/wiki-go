@@ -32,6 +32,9 @@
 
   "nav.home": "الرئيسية",
   "nav.back_to_home": "العودة إلى الرئيسية",
+  "sitemap.title": "خريطة الموقع",
+  "sitemap.xml_sitemap": "خريطة الموقع XML",
+  "sitemap.xml_description": "تنسيق XML لمحركات البحث",
 
   "editor.title": "تعديل المستند",
   "editor.save_success": "تم حفظ المستند بنجاح",

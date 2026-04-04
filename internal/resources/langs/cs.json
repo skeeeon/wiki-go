@@ -32,6 +32,9 @@
 
   "nav.home": "Domů",
   "nav.back_to_home": "Zpět na úvodní stránku",
+  "sitemap.title": "Mapa stránek",
+  "sitemap.xml_sitemap": "XML mapa stránek",
+  "sitemap.xml_description": "XML formát pro vyhledávače",
 
   "editor.title": "Upravit dokument",
   "editor.save_success": "Dokument byl úspěšně uložen",

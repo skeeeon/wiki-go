@@ -32,6 +32,9 @@
 
   "nav.home": "Koti",
   "nav.back_to_home": "Takaisin etusivulle",
+  "sitemap.title": "Sivukartta",
+  "sitemap.xml_sitemap": "XML-sivukartta",
+  "sitemap.xml_description": "XML-muoto hakukoneille",
 
   "editor.title": "Muokkaa dokumenttia",
   "editor.save_success": "Dokumentti tallennettu onnistuneesti",

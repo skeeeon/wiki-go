@@ -17,10 +17,10 @@
 </head>
 <body>
     <div class="sitemap-container">
-        <div class="sitemap-header">
-            <h1>Sitemap</h1>
+        <div class="sitemap-header" dir="auto">
+            <h1>{{.SitemapTitle}}</h1>
             <div class="sitemap-format-links">
-                <a href="/sitemap.xml" title="XML format for search engines">XML Sitemap</a>
+                <a href="/sitemap.xml" title="{{.XMLDescription}}">{{.XMLSitemap}}</a>
                 <a href="/" title="{{.BackToHome}}">{{.BackToHome}}</a>
             </div>
         </div>
@@ -33,7 +33,7 @@
                     {{range $page := index .Categories .HomeCategory}}
                         <li>
                             <a href="{{$page.URL}}">{{$page.Title}}</a>
-                            <span class="last-modified">Last modified: {{$page.LastMod.Format "2006-01-02"}}</span>
+                            <span class="last-modified">{{$.LastModified}}: {{$page.LastMod.Format "2006-01-02"}}</span>
                         </li>
                     {{end}}
                 </ul>
@@ -50,7 +50,7 @@
                             {{range $page := $pages}}
                                 <li>
                                     <a href="{{$page.URL}}">{{$page.Title}}</a>
-                                    <span class="last-modified">Last modified: {{$page.LastMod.Format "2006-01-02"}}</span>
+                                    <span class="last-modified">{{$.LastModified}}: {{$page.LastMod.Format "2006-01-02"}}</span>
                                 </li>
                             {{end}}
                         </ul>

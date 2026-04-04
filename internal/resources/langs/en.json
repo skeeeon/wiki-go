@@ -32,6 +32,9 @@
 
   "nav.home": "Home",
   "nav.back_to_home": "Back to Home",
+  "sitemap.title": "Sitemap",
+  "sitemap.xml_sitemap": "XML Sitemap",
+  "sitemap.xml_description": "XML format for search engines",
 
   "editor.title": "Edit Document",
   "editor.save_success": "Document saved successfully",

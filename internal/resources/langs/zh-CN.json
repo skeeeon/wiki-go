@@ -32,6 +32,9 @@
 
   "nav.home": "首页",
   "nav.back_to_home": "返回首页",
+  "sitemap.title": "站点地图",
+  "sitemap.xml_sitemap": "XML 站点地图",
+  "sitemap.xml_description": "搜索引擎 XML 格式",
 
   "editor.title": "编辑文档",
   "editor.save_success": "文档保存成功",

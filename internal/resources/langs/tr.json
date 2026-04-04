@@ -32,6 +32,9 @@
 
   "nav.home": "Ana Sayfa",
   "nav.back_to_home": "Ana Sayfaya Dön",
+  "sitemap.title": "Site Haritası",
+  "sitemap.xml_sitemap": "XML Site Haritası",
+  "sitemap.xml_description": "Arama motorları için XML formatı",
 
   "editor.title": "Belgeyi Düzenle",
   "editor.save_success": "Belge başarıyla kaydedildi",

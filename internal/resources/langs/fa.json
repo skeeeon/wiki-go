@@ -32,6 +32,9 @@
 
   "nav.home": "خانه",
   "nav.back_to_home": "بازگشت به خانه",
+  "sitemap.title": "نقشه سایت",
+  "sitemap.xml_sitemap": "نقشه سایت XML",
+  "sitemap.xml_description": "فرمت XML برای موتورهای جستجو",
 
   "editor.title": "ویرایش سند",
   "editor.save_success": "سند با موفقیت ذخیره شد",

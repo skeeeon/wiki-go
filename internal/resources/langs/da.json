@@ -32,6 +32,9 @@
 
   "nav.home": "Hjem",
   "nav.back_to_home": "Tilbage til forsiden",
+  "sitemap.title": "Siteoversigt",
+  "sitemap.xml_sitemap": "XML-siteoversigt",
+  "sitemap.xml_description": "XML-format til søgemaskiner",
 
   "editor.title": "Rediger dokument",
   "editor.save_success": "Dokumentet blev gemt",

@@ -32,6 +32,9 @@
 
   "nav.home": "Hjem",
   "nav.back_to_home": "Tilbake til forsiden",
+  "sitemap.title": "Nettstedskart",
+  "sitemap.xml_sitemap": "XML-nettstedskart",
+  "sitemap.xml_description": "XML-format for søkemotorer",
 
   "editor.title": "Rediger dokument",
   "editor.save_success": "Dokumentet ble lagret",

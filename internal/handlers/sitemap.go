@@ -32,14 +32,18 @@ type Sitemap struct {
 
 // Page data for HTML sitemap
 type SitemapPage struct {
-	Title        string
-	Config       *config.Config
-	BaseURL      string
-	Pages        []SitemapPageEntry
-	Categories   map[string][]SitemapPageEntry
-	UserRole     string
-	HomeCategory string
-	BackToHome   string
+	Title          string
+	Config         *config.Config
+	BaseURL        string
+	Pages          []SitemapPageEntry
+	Categories     map[string][]SitemapPageEntry
+	UserRole       string
+	HomeCategory   string
+	BackToHome     string
+	SitemapTitle   string
+	XMLSitemap     string
+	XMLDescription string
+	LastModified   string
 }
 
 type SitemapPageEntry struct {
@@ -148,7 +152,11 @@ func renderHTMLSitemap(w http.ResponseWriter, r *http.Request, pages []SitemapPa
 		Categories:   categories,
 		UserRole:     userRole,
 		HomeCategory: homeCategory,
-		BackToHome:   i18n.Translate("nav.back_to_home"),
+		BackToHome:     i18n.Translate("nav.back_to_home"),
+		SitemapTitle:   i18n.Translate("sitemap.title"),
+		XMLSitemap:     i18n.Translate("sitemap.xml_sitemap"),
+		XMLDescription: i18n.Translate("sitemap.xml_description"),
+		LastModified:   i18n.Translate("footer.last_edited"),
 	}
 
 	// Set content type

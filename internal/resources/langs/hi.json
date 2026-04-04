@@ -32,6 +32,9 @@
 
   "nav.home": "होम",
   "nav.back_to_home": "होम पर वापस जाएं",
+  "sitemap.title": "साइटमैप",
+  "sitemap.xml_sitemap": "XML साइटमैप",
+  "sitemap.xml_description": "खोज इंजन के लिए XML प्रारूप",
 
   "editor.title": "दस्तावेज़ संपादित करें",
   "editor.save_success": "दस्तावेज़ सफलतापूर्वक सहेजा गया",

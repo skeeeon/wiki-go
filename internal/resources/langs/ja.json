@@ -32,6 +32,9 @@
 
   "nav.home": "ホーム",
   "nav.back_to_home": "ホームに戻る",
+  "sitemap.title": "サイトマップ",
+  "sitemap.xml_sitemap": "XMLサイトマップ",
+  "sitemap.xml_description": "検索エンジン向けXML形式",
 
   "editor.title": "文書を編集",
   "editor.save_success": "文書が正常に保存されました",

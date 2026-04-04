@@ -32,6 +32,9 @@
 
   "nav.home": "Accueil",
   "nav.back_to_home": "Retour à l'accueil",
+  "sitemap.title": "Plan du site",
+  "sitemap.xml_sitemap": "Plan du site XML",
+  "sitemap.xml_description": "Format XML pour les moteurs de recherche",
 
   "editor.title": "Modifier le document",
   "editor.save_success": "Document enregistré avec succès",

@@ -32,6 +32,9 @@
 
   "nav.home": "Home",
   "nav.back_to_home": "Terug naar home",
+  "sitemap.title": "Sitemap",
+  "sitemap.xml_sitemap": "XML-sitemap",
+  "sitemap.xml_description": "XML-formaat voor zoekmachines",
 
   "editor.title": "Document bewerken",
   "editor.save_success": "Document succesvol opgeslagen",

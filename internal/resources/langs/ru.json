@@ -32,6 +32,9 @@
 
   "nav.home": "Главная",
   "nav.back_to_home": "Вернуться на главную",
+  "sitemap.title": "Карта сайта",
+  "sitemap.xml_sitemap": "XML-карта сайта",
+  "sitemap.xml_description": "XML-формат для поисковых систем",
 
   "editor.title": "Редактировать документ",
   "editor.save_success": "Документ успешно сохранен",

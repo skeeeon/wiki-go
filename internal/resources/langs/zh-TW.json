@@ -32,6 +32,9 @@
 
   "nav.home": "首頁",
   "nav.back_to_home": "返回首頁",
+  "sitemap.title": "網站地圖",
+  "sitemap.xml_sitemap": "XML 網站地圖",
+  "sitemap.xml_description": "搜尋引擎 XML 格式",
 
   "editor.title": "編輯文件",
   "editor.save_success": "文件儲存成功",
