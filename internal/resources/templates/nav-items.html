@@ -1,14 +1,15 @@
 {{define "nav-items"}}
-    {{range .Children}}
-        <div class="nav-item {{if .IsDir}}directory{{end}} {{if .IsActive}}active{{end}}">
+    {{$open := .AlwaysOpen}}
+    {{range .Root.Children}}
+        <div class="nav-item {{if .IsDir}}directory{{end}} {{if .IsActive}}active{{end}} {{if $open}}open{{end}}">
             <a href="{{.Path}}">
                 {{.Title}}
                 {{/* Show arrow if this item is a directory and has children */}}
                 {{if and .IsDir (gt (len .Children) 0)}}<span class="nav-arrow" aria-hidden="true"></span>{{end}}
             </a>
-            {{if and .IsDir .Children .IsActive}}
+            {{if and .IsDir .Children (or .IsActive $open)}}
                 <div class="nav-children" style="padding-left: 16px;">
-                    {{template "nav-items" .}}
+                    {{template "nav-items" (dict "Root" . "AlwaysOpen" $open)}}
                 </div>
             {{end}}
         </div>

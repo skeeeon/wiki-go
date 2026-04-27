@@ -244,7 +244,7 @@ func PageHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
 	// Prepare template data
 	data := &types.PageData{
-		Navigation:         nav,
+		Navigation:         &types.NavTree{Root: nav, AlwaysOpen: cfg.Wiki.AlwaysOpenChildrenInSidebar},
 		Content:            content,
 		DirContent:         dirContent,
 		Breadcrumbs:        breadcrumbs,

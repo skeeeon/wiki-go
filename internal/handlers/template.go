@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -110,6 +111,23 @@ func getTemplate() (*template.Template, error) {
 				// This is a simplified version for non-markdown contexts (e.g., notice)
 				currentYear := strconv.Itoa(time.Now().Year())
 				return strings.ReplaceAll(text, ":::year:::", currentYear)
+			},
+			// dict builds a map[string]interface{} from alternating key/value
+			// arguments. Used by recursive templates to forward render-time
+			// options without rebinding $.
+			"dict": func(values ...interface{}) (map[string]interface{}, error) {
+				if len(values)%2 != 0 {
+					return nil, fmt.Errorf("dict requires an even number of arguments")
+				}
+				m := make(map[string]interface{}, len(values)/2)
+				for i := 0; i < len(values); i += 2 {
+					key, ok := values[i].(string)
+					if !ok {
+						return nil, fmt.Errorf("dict keys must be strings")
+					}
+					m[key] = values[i+1]
+				}
+				return m, nil
 			},
 		}
 

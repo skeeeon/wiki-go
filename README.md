@@ -509,6 +509,12 @@ The commenting system allows users to provide feedback and engage in discussions
 4. Administrators can delete any comments
 5. Comments can be disabled system-wide through the admin settings panel
 
+### Importing from Notion
+
+If you are migrating from Notion, a community-provided Python script is available to help import your Notion markdown export directly into Wiki-Go's document tree. It automatically converts page hierarchies and handles file attachments.
+
+For detailed instructions, see the [Notion Import Tool Documentation](tools/notion-import/README.md).
+
 ## Shortcuts
 
 Wiki-Go provides several keyboard shortcuts to enhance productivity:

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 	"wiki-go/internal/auth"
+	"wiki-go/internal/i18n"
 	"wiki-go/internal/roles"
 	"wiki-go/internal/utils"
 )
@@ -327,12 +328,21 @@ func CreateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 	// Create the file content with the title as H1
 	var content string
 	if req.Type == "kanban" {
-		content = fmt.Sprintf("---\nlayout: kanban\n---\n\n# %s\n\nEnter content here.\n\n#### Kanban Title\n\n##### Todo\n- [ ] Task 1\n\n##### In Progress\n\n##### Done", req.Title)
+		content = fmt.Sprintf(
+			"---\nlayout: kanban\n---\n\n# %s\n\n%s\n\n#### %s\n\n##### %s\n- [ ] %s\n\n##### %s\n\n##### %s",
+			req.Title,
+			i18n.Translate("new_doc.default_content"),
+			i18n.Translate("new_doc.kanban_title"),
+			i18n.Translate("new_doc.kanban_todo"),
+			i18n.Translate("new_doc.kanban_task_example"),
+			i18n.Translate("new_doc.kanban_in_progress"),
+			i18n.Translate("new_doc.kanban_done"),
+		)
 	} else if req.Type == "links" {
 		content = fmt.Sprintf("---\nlayout: links\n---\n\n# %s\n\n## Web Tools\n- [Example Link](https://example.com) - Sample link description | %s\n\n## Documentation\n- [MDN Docs](https://developer.mozilla.org) - Web development reference | %s", req.Title, time.Now().Format("2006-01-02"), time.Now().Format("2006-01-02"))
 	} else {
 		// Default to markdown
-		content = fmt.Sprintf("# %s\n\nEnter content here.", req.Title)
+		content = fmt.Sprintf("# %s\n\n%s", req.Title, i18n.Translate("new_doc.default_content"))
 	}
 
 	// Write to the file

@@ -1,5 +1,5 @@
 # Build stage
-FROM docker.io/library/golang:1.26.0-alpine3.23 AS builder
+FROM docker.io/library/golang:1.26.2-alpine3.23 AS builder
 
 RUN apk add --no-cache build-base git gcc musl-dev && rm -rf /var/cache/apk/*
 

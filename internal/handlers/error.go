@@ -55,7 +55,7 @@ func NotFoundHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
 
     // Base template data (Content will be filled afterwards)
     data := &types.PageData{
-        Navigation:         nav,
+        Navigation:         &types.NavTree{Root: nav, AlwaysOpen: cfg.Wiki.AlwaysOpenChildrenInSidebar},
         Breadcrumbs:        breadcrumbs,
         Config:             cfg,
         CurrentDir:         &types.NavItem{Title: "404 - Page Not Found", Path: requestedPath},

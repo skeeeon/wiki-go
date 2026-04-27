@@ -588,7 +588,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
 	// Render the page
 	data := &types.PageData{
-		Navigation:         nav,
+		Navigation:         &types.NavTree{Root: nav, AlwaysOpen: cfg.Wiki.AlwaysOpenChildrenInSidebar},
 		Content:            renderedContent,
 		Breadcrumbs:        []types.BreadcrumbItem{{Title: "Home", Path: "/", IsLast: true}},
 		Config:             cfg,
