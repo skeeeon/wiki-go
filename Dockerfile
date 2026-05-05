@@ -24,9 +24,9 @@ RUN addgroup -g ${PGID} appgroup && adduser -u ${PUID} -G appgroup -s /bin/bash 
 
 WORKDIR /wiki
 
-COPY --from=builder /app/wiki-go .
+RUN mkdir -p /wiki/data && chown -R appuser:appgroup /wiki && chmod -R 755 /wiki
 
-RUN mkdir /wiki/data && chown -R appuser:appgroup /wiki && chmod -R 755 /wiki
+COPY --chown=appuser:appgroup --chmod=755 --from=builder /app/wiki-go .
 
 USER appuser
 
