@@ -36,6 +36,7 @@
         initHamburgerMenu();
         initClickOutside();
         initSidebarLinks();
+        initNavArrowToggle();
         initTouchGestures();
         scrollActiveIntoView();
     });
@@ -105,12 +106,41 @@
         if (!sidebar) return;
 
         sidebar.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function(e) {
+                // Don't treat chevron taps as navigation
+                if (e.target.closest('.nav-arrow')) return;
                 // Close sidebar on mobile when link is clicked
                 if (window.innerWidth <= 768) {
                     closeSidebar();
                 }
             });
+        });
+    }
+
+    // ========== NAV ARROW TOGGLE ==========
+
+    function initNavArrowToggle() {
+        if (!sidebar) return;
+
+        sidebar.addEventListener('click', function(e) {
+            const arrow = e.target.closest('.nav-arrow');
+            if (!arrow || !sidebar.contains(arrow)) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const navItem = arrow.closest('.nav-item');
+            if (navItem) navItem.classList.toggle('expanded');
+        });
+
+        sidebar.addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const arrow = e.target.closest('.nav-arrow');
+            if (!arrow || !sidebar.contains(arrow)) return;
+
+            e.preventDefault();
+            const navItem = arrow.closest('.nav-item');
+            if (navItem) navItem.classList.toggle('expanded');
         });
     }
 

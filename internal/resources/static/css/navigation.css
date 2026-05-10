@@ -180,11 +180,17 @@ html, body {
 }
 
 .nav-children {
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 2px;
     margin-top: 2px;
     border-left: 2px solid var(--border-color);
+}
+
+.nav-item.active > .nav-children,
+.nav-item.open > .nav-children,
+.nav-item.expanded > .nav-children {
+    display: flex;
 }
 
 .nav-item a {
@@ -209,6 +215,7 @@ html, body {
 /* Arrow indicator */
 .nav-arrow {
     display: inline-block;
+    position: relative;
     width: 0;
     height: 0;
     border: solid currentColor;
@@ -216,11 +223,26 @@ html, body {
     padding: 4px;
     transform: rotate(-45deg);
     opacity: 0.6;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
-/* Rotate arrow down when directory is expanded (active) */
-.nav-item.active > a .nav-arrow, .nav-item.open > a .nav-arrow {
+/* Enlarge clickable hit area without changing visual size */
+.nav-arrow::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+}
+
+.nav-arrow:hover {
+    opacity: 1;
+}
+
+/* Rotate arrow down when directory is expanded */
+.nav-item.active > a .nav-arrow,
+.nav-item.open > a .nav-arrow,
+.nav-item.expanded > a .nav-arrow {
     transform: rotate(45deg);
 }
 

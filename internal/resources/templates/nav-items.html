@@ -5,9 +5,9 @@
             <a href="{{.Path}}">
                 {{.Title}}
                 {{/* Show arrow if this item is a directory and has children */}}
-                {{if and .IsDir (gt (len .Children) 0)}}<span class="nav-arrow" aria-hidden="true"></span>{{end}}
+                {{if and .IsDir (gt (len .Children) 0)}}<span class="nav-arrow" role="button" tabindex="0" aria-label="Toggle"></span>{{end}}
             </a>
-            {{if and .IsDir .Children (or .IsActive $open)}}
+            {{if and .IsDir .Children}}
                 <div class="nav-children" style="padding-left: 16px;">
                     {{template "nav-items" (dict "Root" . "AlwaysOpen" $open)}}
                 </div>
