@@ -13,6 +13,7 @@ import (
 	"wiki-go/internal/config"
 	"wiki-go/internal/handlers"
 	"wiki-go/internal/resources"
+	"wiki-go/internal/roles"
 )
 
 // addCacheControlHeaders adds appropriate Cache-Control headers based on file type
@@ -191,7 +192,7 @@ func SetupRoutes(cfg *config.Config) {
 	// Role-based middleware
 	adminMiddleware := func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			if !auth.RequireRole(r, "admin") {
+			if !auth.RequireRole(r, roles.RoleAdmin) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusForbidden)
 				json.NewEncoder(w).Encode(map[string]interface{}{
@@ -206,7 +207,7 @@ func SetupRoutes(cfg *config.Config) {
 
 	editorMiddleware := func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			if !auth.RequireRole(r, "editor") {
+			if !auth.RequireRole(r, roles.RoleEditor) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusForbidden)
 				json.NewEncoder(w).Encode(map[string]interface{}{

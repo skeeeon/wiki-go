@@ -22,8 +22,3 @@ func InitHandlers(config *config.Config) {
 
 	// Routes are now managed in the routes package
 }
-
-// We don't need this anymore since main.go handles the routing
-// func handlePage(w http.ResponseWriter, r *http.Request) {
-//     PageHandler(w, r, cfg)
-// }

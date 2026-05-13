@@ -141,7 +141,7 @@ func UpdateWikiSettingsHandler(w http.ResponseWriter, r *http.Request) {
 	updatedConfig.Wiki.Language = req.Language
 
 	// Save the updated config to file
-	configPath := config.ConfigFilePath
+	configPath := cfg.Path
 	if err := saveConfig(configPath, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return

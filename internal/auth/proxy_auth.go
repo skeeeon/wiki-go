@@ -158,7 +158,7 @@ func ensureProxyUserExists(username, role string, groups []string, cfg *config.C
 	// persist is logged but doesn't block the request. The user will be
 	// re-created on next login if persistence failed.
 	go func() {
-		f, err := os.Create(config.ConfigFilePath)
+		f, err := os.Create(cfg.Path)
 		if err != nil {
 			log.Printf("Warning: failed to persist auto-created proxy user %q: %v", username, err)
 			return

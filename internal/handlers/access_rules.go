@@ -99,7 +99,7 @@ func CreateAccessRuleHandler(w http.ResponseWriter, r *http.Request) {
 	updatedConfig.AccessRules = append(updatedConfig.AccessRules, rule)
 
 	// Save the updated config
-	if err := saveConfig(config.ConfigFilePath, &updatedConfig); err != nil {
+	if err := saveConfig(cfg.Path, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -149,7 +149,7 @@ func UpdateAccessRuleHandler(w http.ResponseWriter, r *http.Request, index int) 
 	updatedConfig.AccessRules[index] = rule
 
 	// Save the updated config
-	if err := saveConfig(config.ConfigFilePath, &updatedConfig); err != nil {
+	if err := saveConfig(cfg.Path, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -179,7 +179,7 @@ func DeleteAccessRuleHandler(w http.ResponseWriter, r *http.Request, index int) 
 	updatedConfig.AccessRules = append(updatedConfig.AccessRules[:index], updatedConfig.AccessRules[index+1:]...)
 
 	// Save the updated config
-	if err := saveConfig(config.ConfigFilePath, &updatedConfig); err != nil {
+	if err := saveConfig(cfg.Path, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -226,7 +226,7 @@ func ReorderAccessRulesHandler(w http.ResponseWriter, r *http.Request) {
 	updatedConfig.AccessRules = newRules
 
 	// Save the updated config
-	if err := saveConfig(config.ConfigFilePath, &updatedConfig); err != nil {
+	if err := saveConfig(cfg.Path, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
 	}

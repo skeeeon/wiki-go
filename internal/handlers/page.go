@@ -13,10 +13,11 @@ import (
 	"wiki-go/internal/auth"
 	"wiki-go/internal/comments"
 	"wiki-go/internal/config"
+	"wiki-go/internal/frontmatter"
 	"wiki-go/internal/i18n"
+	"wiki-go/internal/roles"
 	"wiki-go/internal/types"
 	"wiki-go/internal/utils"
-	"wiki-go/internal/frontmatter"
 )
 
 // PageHandler handles requests for pages
@@ -39,7 +40,7 @@ func PageHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 			return
 		}
 		// Check if user has editor or admin role
-		if !auth.RequireRole(r, "editor") {
+		if !auth.RequireRole(r, roles.RoleEditor) {
 			// User lacks required role - redirect to view mode
 			http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
 			return

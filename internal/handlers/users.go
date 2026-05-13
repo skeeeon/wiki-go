@@ -142,7 +142,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Save the updated config
-	configPath := config.ConfigFilePath
+	configPath := cfg.Path
 	if err := saveConfig(configPath, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
@@ -220,7 +220,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save the updated config
-	configPath := config.ConfigFilePath
+	configPath := cfg.Path
 	if err := saveConfig(configPath, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return
@@ -293,7 +293,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save the updated config
-	configPath := config.ConfigFilePath
+	configPath := cfg.Path
 	if err := saveConfig(configPath, &updatedConfig); err != nil {
 		sendJSONError(w, "Failed to save configuration", http.StatusInternalServerError, err.Error())
 		return

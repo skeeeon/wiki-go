@@ -114,9 +114,9 @@ func TestGetSession_ExpiredSessionReturnsNilAndIsDeleted(t *testing.T) {
 	// Expired session must have been removed from the map so a second lookup
 	// is fast and consistent. Otherwise the map would grow without bound for
 	// every expired-but-not-collected session.
-	mu.RLock()
+	mu.Lock()
 	_, stillPresent := sessions[hashed]
-	mu.RUnlock()
+	mu.Unlock()
 	if stillPresent {
 		t.Error("expired session should be evicted from the map on first lookup")
 	}
@@ -169,9 +169,9 @@ func TestGetSession_UpdatesLastAccessed(t *testing.T) {
 		t.Fatal("expected session")
 	}
 
-	mu.RLock()
+	mu.Lock()
 	got := sessions[hashed].LastAccessed
-	mu.RUnlock()
+	mu.Unlock()
 	if !got.After(stale) {
 		t.Errorf("LastAccessed should advance after GetSession; was %v, still %v", stale, got)
 	}

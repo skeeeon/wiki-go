@@ -73,8 +73,7 @@ func handleUpdateSecurity(w http.ResponseWriter, r *http.Request) {
     cfg.Security.LoginBan.MaxBanSeconds = req.LoginBan.MaxBanSeconds
 
     // Persist to disk
-    // Reuse SaveConfig with config.ConfigFilePath
-    f, err := os.Create(config.ConfigFilePath)
+    f, err := os.Create(cfg.Path)
     if err == nil {
         _ = config.SaveConfig(cfg, f)
         f.Close()

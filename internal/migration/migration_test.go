@@ -218,6 +218,105 @@ func TestMigrateUserRoles_CreatesBackupBeforeRewriting(t *testing.T) {
 	}
 }
 
+func TestMigrateUserRoles_PreservesUnrelatedFields(t *testing.T) {
+	// Regression test for the silent-data-loss bug fixed by mirroring
+	// config.Config's full field set in migration.Config. If migration ever
+	// drops sections like access_rules, security, or trusted_proxy_auth
+	// during the YAML roundtrip, this test fails.
+	path := writeTempConfig(t, `
+server:
+  host: 0.0.0.0
+  trusted_proxy_auth:
+    enabled: true
+    user_header: X-Forwarded-User
+    trusted_cidrs:
+      - "10.0.0.0/8"
+wiki:
+  enable_link_embedding: true
+  hide_attachments: true
+security:
+  passwordstrength: 12
+  login_ban:
+    enabled: true
+    max_failures: 3
+access_rules:
+  - pattern: /internal/**
+    access: restricted
+    groups: [staff]
+    description: internal only
+users:
+  - username: alice
+    password: hash
+    is_admin: true
+`)
+
+	if err := MigrateUserRoles(path); err != nil {
+		t.Fatalf("MigrateUserRoles: %v", err)
+	}
+
+	cfg := readConfig(t, path)
+
+	// Migration did its job.
+	if cfg.Users[0].Role != "admin" {
+		t.Errorf("alice role: got %q, want admin", cfg.Users[0].Role)
+	}
+
+	// And every other section survived.
+	if !cfg.Server.TrustedProxyAuth.Enabled {
+		t.Error("trusted_proxy_auth.enabled was dropped during migration")
+	}
+	if cfg.Server.TrustedProxyAuth.UserHeader != "X-Forwarded-User" {
+		t.Errorf("trusted_proxy_auth.user_header dropped: %q", cfg.Server.TrustedProxyAuth.UserHeader)
+	}
+	if len(cfg.Server.TrustedProxyAuth.TrustedCIDRs) != 1 {
+		t.Errorf("trusted_cidrs dropped: %+v", cfg.Server.TrustedProxyAuth.TrustedCIDRs)
+	}
+	if !cfg.Wiki.EnableLinkEmbedding {
+		t.Error("wiki.enable_link_embedding dropped")
+	}
+	if !cfg.Wiki.HideAttachments {
+		t.Error("wiki.hide_attachments dropped")
+	}
+	if cfg.Security.PasswordStrength != 12 {
+		t.Errorf("security.passwordstrength dropped: got %d", cfg.Security.PasswordStrength)
+	}
+	if cfg.Security.LoginBan.MaxFailures != 3 {
+		t.Errorf("security.login_ban.max_failures dropped: got %d", cfg.Security.LoginBan.MaxFailures)
+	}
+	if len(cfg.AccessRules) != 1 {
+		t.Fatalf("access_rules dropped: got %d, want 1", len(cfg.AccessRules))
+	}
+	if cfg.AccessRules[0].Pattern != "/internal/**" || cfg.AccessRules[0].Description != "internal only" {
+		t.Errorf("access_rules content not preserved: %+v", cfg.AccessRules[0])
+	}
+}
+
+func TestMigrateUserRoles_PreservesUserGroups(t *testing.T) {
+	// Same regression: user groups must survive migration, since migration.User
+	// previously didn't have a Groups field.
+	path := writeTempConfig(t, `
+users:
+  - username: alice
+    password: hash
+    is_admin: true
+    groups:
+      - staff
+      - leads
+`)
+
+	if err := MigrateUserRoles(path); err != nil {
+		t.Fatalf("MigrateUserRoles: %v", err)
+	}
+
+	cfg := readConfig(t, path)
+	if cfg.Users[0].Role != "admin" {
+		t.Errorf("role not migrated: %q", cfg.Users[0].Role)
+	}
+	if len(cfg.Users[0].Groups) != 2 || cfg.Users[0].Groups[0] != "staff" || cfg.Users[0].Groups[1] != "leads" {
+		t.Errorf("user groups dropped during migration: %+v", cfg.Users[0].Groups)
+	}
+}
+
 func TestMigrateUserRoles_PreservesExistingRolesWhenMixed(t *testing.T) {
 	// A common case: one user has IsAdmin=true (needs migration), another
 	// has a real role already (should be preserved untouched).

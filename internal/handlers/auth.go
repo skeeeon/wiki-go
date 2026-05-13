@@ -238,17 +238,11 @@ func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 
 // CheckDefaultPasswordHandler checks if the default admin password is still in use
 func CheckDefaultPasswordHandler(w http.ResponseWriter, r *http.Request) {
-	// Default admin credentials (typically admin/admin)
-	defaultUsername := "admin"
-	defaultPassword := "admin"
-
-	// Check if any admin user still has the default password
 	defaultPasswordInUse := false
 
 	for _, user := range cfg.Users {
-		if user.Role == roles.RoleAdmin && user.Username == defaultUsername {
-			// Check if password is still the default
-			if crypto.CheckPasswordHash(defaultPassword, user.Password) {
+		if user.Role == roles.RoleAdmin && user.Username == config.DefaultAdminUsername {
+			if crypto.CheckPasswordHash(config.DefaultAdminPassword, user.Password) {
 				defaultPasswordInUse = true
 				break
 			}

@@ -11,11 +11,12 @@ import (
 	"strings"
 	"time"
 
+	"wiki-go/internal/auth"
 	"wiki-go/internal/config"
 	"wiki-go/internal/i18n"
+	"wiki-go/internal/roles"
 	"wiki-go/internal/types"
 	"wiki-go/internal/utils"
-	"wiki-go/internal/auth"
 )
 
 // Default homepage content
@@ -518,7 +519,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 			return
 		}
 		// Check if user has editor or admin role
-		if !auth.RequireRole(r, "editor") {
+		if !auth.RequireRole(r, roles.RoleEditor) {
 			// User lacks required role - redirect to view mode
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return

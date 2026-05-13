@@ -12,10 +12,11 @@ import (
 )
 
 // resetAuthState puts the package's global state into a known-empty form for
-// the duration of a single test. Session storage uses t.TempDir(); the config
-// file path is pointed at os.DevNull because ensureProxyUserExists persists in
-// a fire-and-forget goroutine that would otherwise race with TempDir cleanup.
-// The in-memory cfg.Users mutation is synchronous and is what tests verify.
+// the duration of a single test. Session storage uses t.TempDir(). Per-test
+// config.Path is set via newTPAConfig — the fire-and-forget persist goroutine
+// in ensureProxyUserExists writes to os.DevNull so it can't race with
+// t.TempDir() cleanup. The in-memory cfg.Users mutation is synchronous and
+// is what tests verify.
 func resetAuthState(t *testing.T) {
 	t.Helper()
 	dir := t.TempDir()
@@ -25,13 +26,14 @@ func resetAuthState(t *testing.T) {
 	mu.Lock()
 	sessions = make(map[string]Session)
 	mu.Unlock()
-	config.ConfigFilePath = os.DevNull
 }
 
 // newTPAConfig returns a config with trusted-proxy-auth enabled and default
-// header names/role matching the application defaults.
+// header names/role matching the application defaults. Path points at
+// os.DevNull so ensureProxyUserExists's fire-and-forget goroutine writes
+// somewhere safe instead of racing with t.TempDir() cleanup.
 func newTPAConfig() *config.Config {
-	cfg := &config.Config{}
+	cfg := &config.Config{Path: os.DevNull}
 	cfg.Server.AllowInsecureCookies = true // cookies need to work over the test http transport
 	cfg.Server.TrustedProxyAuth = config.TrustedProxyAuthConfig{
 		Enabled:         true,

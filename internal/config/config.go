@@ -18,6 +18,13 @@ var (
 	ConfigFilePath string = "data/config.yaml"
 )
 
+// Default credentials created on first run. CheckDefaultPasswordHandler uses
+// the same values to warn the operator if they haven't been changed yet.
+const (
+	DefaultAdminUsername = "admin"
+	DefaultAdminPassword = "admin"
+)
+
 // User represents a user with authentication credentials
 type User struct {
 	Username string   `yaml:"username" json:"username"`
@@ -102,12 +109,17 @@ type Config struct {
 			MaxBanSeconds     int  `yaml:"max_ban_seconds"`
 		} `yaml:"login_ban"`
 	} `yaml:"security"`
+
+	// Path is the on-disk location this config was loaded from. Set by
+	// LoadConfig and read by handlers/auth code that needs to persist
+	// changes back to the same file. Not serialised.
+	Path string `yaml:"-"`
 }
 
 // LoadConfig loads the configuration from a YAML file
 func LoadConfig(path string) (*Config, error) {
 	// Set default values
-	config := &Config{}
+	config := &Config{Path: path}
 	config.Server.Host = "0.0.0.0" // Set to localhost for local development
 	config.Server.Port = 8080
 	config.Server.AllowInsecureCookies = false // Default to secure cookies
@@ -162,14 +174,14 @@ func LoadConfig(path string) (*Config, error) {
 			}
 
 			// Hash the default admin password
-			hashedPassword, err := crypto.HashPassword("admin", config.Security.PasswordStrength)
+			hashedPassword, err := crypto.HashPassword(DefaultAdminPassword, config.Security.PasswordStrength)
 			if err != nil {
 				return nil, err
 			}
 
 			// Add default admin user
 			config.Users = append(config.Users, User{
-				Username: "admin",
+				Username: DefaultAdminUsername,
 				Password: hashedPassword,
 				Role:     RoleAdmin,
 			})

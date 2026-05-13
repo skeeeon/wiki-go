@@ -44,6 +44,29 @@ func TestLoadConfig_MissingFileCreatesDefault(t *testing.T) {
 	if cfg.Security.PasswordStrength < 10 {
 		t.Errorf("PasswordStrength default too low: %d", cfg.Security.PasswordStrength)
 	}
+
+	// Path must be populated — several handlers depend on cfg.Path to know
+	// where to persist changes. If LoadConfig forgets to set it, all the
+	// admin write paths silently fail to open the empty path.
+	if cfg.Path != path {
+		t.Errorf("cfg.Path: got %q, want %q", cfg.Path, path)
+	}
+}
+
+func TestLoadConfig_ExistingFilePopulatesPath(t *testing.T) {
+	// Same Path guarantee but on the "file exists, just parse it" path.
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	contents := "server:\n  host: 0.0.0.0\n  port: 8080\nwiki:\n  root_dir: data\n  language: en\nusers:\n  - username: admin\n    password: x\n    role: admin\n"
+	if err := os.WriteFile(path, []byte(contents), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := LoadConfig(path)
+	if err != nil {
+		t.Fatalf("LoadConfig: %v", err)
+	}
+	if cfg.Path != path {
+		t.Errorf("cfg.Path: got %q, want %q", cfg.Path, path)
+	}
 }
 
 // --- SaveConfig → LoadConfig roundtrip -------------------------------------

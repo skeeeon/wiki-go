@@ -27,8 +27,10 @@ type Session struct {
 }
 
 var (
-	sessions     = make(map[string]Session)
-	mu           sync.RWMutex
+	sessions = make(map[string]Session)
+	// mu is a Mutex (not RWMutex) because GetSession updates LastAccessed on
+	// every read, so even the "read" path needs a write lock.
+	mu           sync.Mutex
 	sessionStore *SessionStore
 )
 

@@ -11,39 +11,82 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// User represents a user with authentication credentials (copied from config to avoid import cycle)
+// User mirrors config.User plus the legacy IsAdmin field. The mirror exists
+// because MigrateUserRoles round-trips the config through yaml.Marshal — any
+// field present on disk but missing from this struct would be silently
+// dropped on rewrite. drift_test.go enforces this stays in sync.
 type User struct {
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Role     string `yaml:"role"`     // "admin", "editor", or "viewer"
-	IsAdmin  bool   `yaml:"is_admin,omitempty"` // Old field for migration
+	Username string   `yaml:"username"`
+	Password string   `yaml:"password"`
+	Role     string   `yaml:"role"`     // "admin", "editor", or "viewer"
+	Groups   []string `yaml:"groups,omitempty"`
+	IsAdmin  bool     `yaml:"is_admin,omitempty"` // legacy field this migration converts away from
 }
 
-// Config represents a simplified version of the server configuration (copied from config to avoid import cycle)
+// AccessRule mirrors config.AccessRule. Same reason as above.
+type AccessRule struct {
+	Pattern     string   `yaml:"pattern"`
+	Access      string   `yaml:"access"`
+	Groups      []string `yaml:"groups,omitempty"`
+	Description string   `yaml:"description,omitempty"`
+}
+
+// TrustedProxyAuthConfig mirrors config.TrustedProxyAuthConfig.
+type TrustedProxyAuthConfig struct {
+	Enabled         bool     `yaml:"enabled"`
+	UserHeader      string   `yaml:"user_header"`
+	EmailHeader     string   `yaml:"email_header"`
+	GroupsHeader    string   `yaml:"groups_header"`
+	GroupsDelimiter string   `yaml:"groups_delimiter"`
+	DefaultRole     string   `yaml:"default_role"`
+	AutoCreateUsers bool     `yaml:"auto_create_users"`
+	LogoutURL       string   `yaml:"logout_url"`
+	TrustedCIDRs    []string `yaml:"trusted_cidrs,omitempty"`
+}
+
+// Config mirrors config.Config so the migration's read/modify/write cycle is
+// lossless. We don't use this struct for anything other than YAML
+// passthrough; the migration only touches Users.
 type Config struct {
 	Server struct {
-		Host                 string `yaml:"host"`
-		Port                 int    `yaml:"port"`
-		AllowInsecureCookies bool   `yaml:"allow_insecure_cookies"`
-		SSL                  bool   `yaml:"ssl"`
-		SSLCert              string `yaml:"ssl_cert"`
-		SSLKey               string `yaml:"ssl_key"`
+		Host                 string                 `yaml:"host"`
+		Port                 int                    `yaml:"port"`
+		AllowInsecureCookies bool                   `yaml:"allow_insecure_cookies"`
+		SSL                  bool                   `yaml:"ssl"`
+		SSLCert              string                 `yaml:"ssl_cert"`
+		SSLKey               string                 `yaml:"ssl_key"`
+		TrustedProxyAuth     TrustedProxyAuthConfig `yaml:"trusted_proxy_auth"`
 	} `yaml:"server"`
 	Wiki struct {
-		RootDir                   string `yaml:"root_dir"`
-		DocumentsDir              string `yaml:"documents_dir"`
-		Title                     string `yaml:"title"`
-		Owner                     string `yaml:"owner"`
-		Notice                    string `yaml:"notice"`
-		Timezone                  string `yaml:"timezone"`
-		Private                   bool   `yaml:"private"`
-		DisableComments           bool   `yaml:"disable_comments"`
-		DisableFileUploadChecking bool   `yaml:"disable_file_upload_checking"`
-		MaxVersions               int    `yaml:"max_versions"`
-		MaxUploadSize             int    `yaml:"max_upload_size"`
-		Language                  string `yaml:"language"`
+		RootDir                     string `yaml:"root_dir"`
+		DocumentsDir                string `yaml:"documents_dir"`
+		Title                       string `yaml:"title"`
+		Owner                       string `yaml:"owner"`
+		Notice                      string `yaml:"notice"`
+		Timezone                    string `yaml:"timezone"`
+		Private                     bool   `yaml:"private"`
+		DisableComments             bool   `yaml:"disable_comments"`
+		DisableFileUploadChecking   bool   `yaml:"disable_file_upload_checking"`
+		EnableLinkEmbedding         bool   `yaml:"enable_link_embedding"`
+		HideAttachments             bool   `yaml:"hide_attachments"`
+		DisableContentMaxWidth      bool   `yaml:"disable_content_max_width"`
+		AlwaysOpenChildrenInSidebar bool   `yaml:"always_open_children_in_sidebar"`
+		MaxVersions                 int    `yaml:"max_versions"`
+		MaxUploadSize               int    `yaml:"max_upload_size"`
+		Language                    string `yaml:"language"`
 	} `yaml:"wiki"`
-	Users []User `yaml:"users"`
+	Users       []User       `yaml:"users"`
+	AccessRules []AccessRule `yaml:"access_rules,omitempty"`
+	Security    struct {
+		PasswordStrength int `yaml:"passwordstrength"`
+		LoginBan         struct {
+			Enabled           bool `yaml:"enabled"`
+			MaxFailures       int  `yaml:"max_failures"`
+			WindowSeconds     int  `yaml:"window_seconds"`
+			InitialBanSeconds int  `yaml:"initial_ban_seconds"`
+			MaxBanSeconds     int  `yaml:"max_ban_seconds"`
+		} `yaml:"login_ban"`
+	} `yaml:"security"`
 }
 
 // copyFile creates a copy of src file at dst path
