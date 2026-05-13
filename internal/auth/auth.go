@@ -55,21 +55,11 @@ func InitSessionStore(filePath string) error {
 	}
 	mu.Unlock()
 
-	// Start background cleanup goroutine
+	// Hourly background sweep for expired sessions.
 	go func() {
 		ticker := time.NewTicker(1 * time.Hour)
 		defer ticker.Stop()
 		for range ticker.C {
-			// We need to pass the map to CleanupExpiredSessions
-			// But we need to be careful about concurrency.
-			// The CleanupExpiredSessions in session_store.go as I wrote it
-			// takes the map and modifies it.
-			// However, the map 'sessions' is global here and protected by 'mu'.
-			// The SessionStore.CleanupExpiredSessions I wrote assumes it owns the map or locks it.
-			// But here 'sessions' is the global map.
-
-			// Let's adjust the strategy.
-			// We should lock 'mu', perform cleanup on 'sessions', and then save.
 			mu.Lock()
 			deleted := 0
 			for token, session := range sessions {
